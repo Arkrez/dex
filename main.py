@@ -10,7 +10,7 @@ class MainMenu:
         self.screen = screen
         self.font = pygame.font.SysFont("DejaVuSans", 36, bold=True)
         self.items = [("Browse Collection", self.goto_collection),
-                      ("Take a Screenshot", self.take_screenshot)]
+                      ("Take a Screenshot", self.action_take_screenshot)]
         self.sel = 0
 
     def draw(self):
@@ -32,7 +32,7 @@ class MainMenu:
         collection.run(self.screen)  # switch to collection page
 
 
-    def action_take_screenshot():
+    def action_take_screenshot(self):
         CLF = SpeciesClassifier("/home/pi/models/inat.tflite", "/home/pi/models/labels.txt")
 
         outdir = os.path.expanduser("~/Pictures"); os.makedirs(outdir, exist_ok=True)
