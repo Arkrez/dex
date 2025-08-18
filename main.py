@@ -35,7 +35,7 @@ class MainMenu:
     def goto_camera(self):
         BASE_DIR = Path(__file__).parent
         MODEL_PATH = BASE_DIR / "models" / "inat.tflite"
-        LABELS_PATH = BASE_DIR / "models" / "labels.txt"
+        LABELS_PATH = BASE_DIR / "models" / "labels.csv"
         clf = SpeciesClassifier(str(MODEL_PATH), str(LABELS_PATH))
 
         outdir = os.path.expanduser("~/Pictures")

@@ -112,10 +112,14 @@ def run(screen, discovered):
     load_labels_from_csv(LABELS_PATH)
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered)
-    running=True
+
+    pygame.key.set_repeat(200, 50) 
+
+    running = True
     while running:
         for e in pygame.event.get():
             if e.type == pygame.QUIT: return False
             running = page.handle_event(e)
-        page.draw(); clock.tick(60)
+        page.draw()
+        clock.tick(60)
     return True
