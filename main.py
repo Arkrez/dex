@@ -37,7 +37,7 @@ class MainMenu:
     def goto_camera(self):
         base = Path(__file__).parent
         model_path = base / "models" / "inat.tflite"
-        csv_path   = base / "models" / "taxonomy.csv"   # your CSV mapping
+        csv_path   = base / "models" / "labels.csv"   # your CSV mapping
         clf = SpeciesClassifier(str(model_path), str(csv_path))
 
         # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
