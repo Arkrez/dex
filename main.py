@@ -1,15 +1,16 @@
-import pygame, sys, os, subprocess
+import pygame, sys, os
 from pathlib import Path
 from classifier import SpeciesClassifier
 import collection
 from discovered import load as load_disc, save as save_disc
+from camera import CameraView  # <-- new
 
 class MainMenu:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("DejaVuSans", 36, bold=True)
         self.items = [("Browse Collection", self.goto_collection),
-                      ("Take a Screenshot", self.action_take_screenshot)]
+                      ("Camera", self.goto_camera)]  # renamed/added
         self.sel = 0
         self.discovered = load_disc()
 
@@ -31,36 +32,28 @@ class MainMenu:
     def goto_collection(self):
         collection.run(self.screen, self.discovered)
 
-    def action_take_screenshot(self):
+    def goto_camera(self):
         BASE_DIR = Path(__file__).parent
         MODEL_PATH = BASE_DIR / "models" / "inat.tflite"
         LABELS_PATH = BASE_DIR / "models" / "labels.txt"
-        CLF = SpeciesClassifier(str(MODEL_PATH), str(LABELS_PATH))
+        clf = SpeciesClassifier(str(MODEL_PATH), str(LABELS_PATH))
 
-        outdir = os.path.expanduser("~/Pictures"); os.makedirs(outdir, exist_ok=True)
-        img = os.path.join(outdir, "capture.jpg")
+        outdir = os.path.expanduser("~/Pictures")
+        cam = CameraView(outdir, width=1024, height=768)
+        cam.run(self.screen, clf)
 
-        # Use rpicam-still (replacement for libcamera-still)
-        subprocess.run([
-            "rpicam-still", "--nopreview",
-            "--output", img, "--timeout", "1000",
-            "--width", "1024", "--height", "768"
-        ], check=True)
-
-        label, prob = CLF.classify(img, top_k=1)[0]
-        print(f"Top: {label}  {prob:.2%}")
-
-        if prob >= 0.80 and label not in self.discovered:
-            self.discovered.add(label)
-            save_disc(self.discovered)
-            print(f"Discovered: {label}")
+        # if a confident result was produced in the last shot, record it
+        if cam.last_result:
+            label, prob = cam.last_result
+            if prob >= 0.80 and label not in self.discovered:
+                self.discovered.add(label)
+                save_disc(self.discovered)
 
 def run():
     pygame.init()
     screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
     menu = MainMenu(screen)
     clock = pygame.time.Clock()
-
     running = True
     while running:
         for e in pygame.event.get():
@@ -70,7 +63,6 @@ def run():
                 menu.handle_event(e)
         menu.draw()
         clock.tick(30)
-
     pygame.quit()
     sys.exit()
 
