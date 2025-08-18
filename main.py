@@ -2,17 +2,19 @@ import pygame, sys, os
 from pathlib import Path
 from classifier import SpeciesClassifier
 import collection
-from discovered import load as load_disc, save as save_disc
-from camera import CameraView  # <-- new
+from discovered import load_db, discovered_names   # use DB helpers
+from camera import CameraView
 
 class MainMenu:
     def __init__(self, screen):
         self.screen = screen
         self.font = pygame.font.SysFont("DejaVuSans", 36, bold=True)
         self.items = [("Browse Collection", self.goto_collection),
-                      ("Camera", self.goto_camera)]  # renamed/added
+                      ("Camera", self.goto_camera)]
         self.sel = 0
-        self.discovered = load_disc()
+        # init discovered from DB
+        self.db = load_db()
+        self.discovered = discovered_names(self.db)
 
     def draw(self):
         self.screen.fill((0,0,0))
@@ -33,25 +35,25 @@ class MainMenu:
         collection.run(self.screen, self.discovered)
 
     def goto_camera(self):
-        BASE_DIR = Path(__file__).parent
-        MODEL_PATH = BASE_DIR / "models" / "inat.tflite"
-        LABELS_PATH = BASE_DIR / "models" / "labels.csv"
-        clf = SpeciesClassifier(str(MODEL_PATH), str(LABELS_PATH))
+        base = Path(__file__).parent
+        model_path = base / "models" / "inat.tflite"
+        csv_path   = base / "models" / "taxonomy.csv"   # your CSV mapping
+        clf = SpeciesClassifier(str(model_path), str(csv_path))
 
+        # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
         outdir = os.path.expanduser("~/Pictures")
         cam = CameraView(outdir, width=1024, height=768)
         cam.run(self.screen, clf)
 
-        # if a confident result was produced in the last shot, record it
-        if cam.last_result:
-            label, prob = cam.last_result
-            if prob >= 0.80 and label not in self.discovered:
-                self.discovered.add(label)
-                save_disc(self.discovered)
+        # refresh discovered after camera session (camera updates DB itself)
+        from discovered import load_db, discovered_names
+        self.db = load_db()
+        self.discovered = discovered_names(self.db)
 
 def run():
     pygame.init()
-    screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((1280, 800))  # windowed for dev; switch to FULLSCREEN on Pi
+    pygame.display.set_caption("DEX")
     menu = MainMenu(screen)
     clock = pygame.time.Clock()
     running = True
@@ -63,8 +65,7 @@ def run():
                 menu.handle_event(e)
         menu.draw()
         clock.tick(30)
-    pygame.quit()
-    sys.exit()
+    pygame.quit(); sys.exit()
 
 if __name__ == "__main__":
     run()
