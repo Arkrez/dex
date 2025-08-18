@@ -52,7 +52,7 @@ class CollectionPage:
 
         # image
         top_rect = pygame.Rect(0,0,left_w,h//2)
-        img_path = item["image"] if discovered else SILHOUETTE
+        img_path = discovered.name["image"] if discovered else SILHOUETTE
         key = (img_path, top_rect.size)
         if key not in self.cache: self.cache[key] = load_image(img_path, top_rect.size)
         self.screen.blit(self.cache[key], top_rect.topleft)
