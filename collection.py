@@ -113,12 +113,12 @@ class CollectionPage:
         if self.sel < self.scroll: self.scroll=self.sel
         elif self.sel >= self.scroll+view_rows: self.scroll=self.sel - view_rows + 1
 
-def run(screen, discovered):
+def run(screen, discovered, db):
     BASE_DIR = Path(__file__).parent
     LABELS_PATH = BASE_DIR / "models" / "labels.csv"
     load_labels_from_csv(LABELS_PATH)
     clock = pygame.time.Clock()
-    page = CollectionPage(screen, discovered)
+    page = CollectionPage(screen, discovered, db)
 
     pygame.key.set_repeat(200, 50) 
 
