@@ -1,33 +1,26 @@
 #!/bin/bash
 set -e
 
-echo "Updating system..."
 sudo apt update
-sudo apt install -y \
-    python3-pip python3-venv \
-    libatlas-base-dev \
-    libcamera-apps \
-    git
+sudo apt install -y python3-venv python3-pip libatlas-base-dev libcamera-apps git
 
-echo "Creating virtual environment..."
+# fresh venv
+rm -rf .venv
 python3 -m venv .venv
 source .venv/bin/activate
 
-echo "Upgrading pip..."
-python3 -m pip install --upgrade pip setuptools wheel
-python3 -m venv .venv && source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install "tflite-runtime==2.14.0"   # pulls cp311 manylinux aarch64 wheel
+# tooling
+python -m pip install --upgrade pip setuptools wheel
 
+# >>> critical: pin numpy 1.26, then tflite-runtime 2.14 <<<
+pip install "numpy==1.26.4" "tflite-runtime==2.14.0" pillow pygame gpiozero RPi.GPIO
 
-echo "Installing Python packages..."
-python3 -m pip install \
-    pygame \
-    numpy \
-    pillow \
-    gpiozero \
-    RPi.GPIO \
-    --extra-index-url https://google-coral.github.io/py-repo/ tflite_runtime
+# quick sanity check (should print version & not crash)
+python - <<'PY'
+import numpy, tflite_runtime.interpreter as t
+print("NumPy:", numpy.__version__)
+t.Interpreter  # existence check
+print("tflite ok")
+PY
 
-echo "All dependencies installed."
-echo "To start using, run: source .venv/bin/activate"
+echo "All set. Run: source .venv/bin/activate"
