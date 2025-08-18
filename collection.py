@@ -82,7 +82,7 @@ class CollectionPage:
         y=list_pad
         for i in range(start,end):
             focused=(i==self.sel); a=ANIMALS[i]
-            label = a["name"] if a["name"] in self.discovered else "???"
+            label = i + " : " + (a["name"] if a["name"] in self.discovered else "???")
             bg = pygame.Rect(right_x+list_pad, y, w-right_x-list_pad*2, row_h-8)
             if focused: pygame.draw.rect(self.screen, HILITE, bg, border_radius=12)
             txt = self.font_list.render(label, True, (255,255,255) if focused else FG)
