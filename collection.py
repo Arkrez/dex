@@ -53,8 +53,10 @@ class CollectionPage:
         # image
         top_rect = pygame.Rect(0,0,left_w,h//2)
         if discovered and item["name"] in self.discovered:
-            imgs = self.discovered.get(item["name"], [])
+            entry = self.discovered.get(item["name"])
+            imgs = entry.get("images", []) if isinstance(entry, dict) else []
             img_path = imgs[-1] if imgs else SILHOUETTE
+
         else:
             img_path = SILHOUETTE        
         key = (img_path, top_rect.size)
