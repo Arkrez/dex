@@ -1,15 +1,25 @@
 # collection.py
 import pygame, os, textwrap
 from pathlib import Path
+import csv
 
 # sample data
 ANIMALS = [
-    {"name":"Bald Eagle","image":"assets/bald_eagle.jpg","desc":"Large raptor near coasts/rivers."},
-    {"name":"Black Bear","image":"assets/black_bear.jpg","desc":"Omnivore of forests; color varies."},
-    {"name":"Roosevelt Elk","image":"assets/roosevelt_elk.jpg","desc":"Largest elk; Olympic rainforests."},
-    {"name":"Pacific Wren","image":"assets/pacific_wren.jpg","desc":"Tiny; explosive song; conifer undergrowth."},
-    {"name":"Douglas Squirrel","image":"assets/douglas_squirrel.jpg","desc":"Tree squirrel; chatter; conifer seeds."},
 ]
+def load_labels_from_csv(csv_path: str):
+    ANIMALS = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row.get("leaf_class_id") and row.get("name"):
+                try:
+                    ANIMALS[int(row["leaf_class_id"])] = {
+                        "name": row["name"],
+                        "description": "",
+                        "iamge": ""
+                        }
+                except ValueError:
+                    pass
+    return ANIMALS
 
 SILHOUETTE = str(Path(__file__).parent / "assets" / "silhouette.jpg")  # add a silhouette image to repo
 
@@ -98,6 +108,9 @@ class CollectionPage:
         elif self.sel >= self.scroll+view_rows: self.scroll=self.sel - view_rows + 1
 
 def run(screen, discovered):
+    BASE_DIR = Path(__file__).parent
+    LABELS_PATH = BASE_DIR / "models" / "labels.txt"
+    load_labels_from_csv(LABELS_PATH)
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered)
     running=True
