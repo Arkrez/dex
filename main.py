@@ -11,7 +11,6 @@ class MainMenu:
         self.items = [("Browse Collection", self.goto_collection),
                       ("Take a Screenshot", self.action_take_screenshot)]
         self.sel = 0
-        # keep discovered in memory
         self.discovered = load_disc()
 
     def draw(self):
@@ -30,7 +29,6 @@ class MainMenu:
                 self.items[self.sel][1]()
 
     def goto_collection(self):
-        # pass discovered set into collection UI
         collection.run(self.screen, self.discovered)
 
     def action_take_screenshot(self):
@@ -41,17 +39,22 @@ class MainMenu:
 
         outdir = os.path.expanduser("~/Pictures"); os.makedirs(outdir, exist_ok=True)
         img = os.path.join(outdir, "capture.jpg")
-        subprocess.run(["libcamera-still","-n","-o",img,"-t","1000","--width","1024","--height","768"], check=True)
 
-        top = CLF.classify(img, top_k=1)[0]  # (label, prob)
-        label, prob = top[0], top[1]
+        # Use rpicam-still (replacement for libcamera-still)
+        subprocess.run([
+            "rpicam-still", "--nopreview",
+            "--output", img, "--timeout", "1000",
+            "--width", "1024", "--height", "768"
+        ], check=True)
+
+        label, prob = CLF.classify(img, top_k=1)[0]
         print(f"Top: {label}  {prob:.2%}")
 
-        if prob >= 0.80:
-            if label not in self.discovered:
-                self.discovered.add(label)
-                save_disc(self.discovered)
-                print(f"Discovered: {label}")
+        if prob >= 0.80 and label not in self.discovered:
+            self.discovered.add(label)
+            save_disc(self.discovered)
+            print(f"Discovered: {label}")
+
 def run():
     pygame.init()
     screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
@@ -61,9 +64,7 @@ def run():
     running = True
     while running:
         for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                running = False
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
                 running = False
             else:
                 menu.handle_event(e)
