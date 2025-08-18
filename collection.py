@@ -108,7 +108,7 @@ class CollectionPage:
 
 def run(screen, discovered):
     BASE_DIR = Path(__file__).parent
-    LABELS_PATH = BASE_DIR / "models" / "labels.txt"
+    LABELS_PATH = BASE_DIR / "models" / "labels.csv"
     load_labels_from_csv(LABELS_PATH)
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered)
