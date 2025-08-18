@@ -33,8 +33,9 @@ def load_image(path, size):
         return surf
 
 class CollectionPage:
-    def __init__(self, screen, discovered):
+    def __init__(self, screen, discovered, db):
         self.screen = screen
+        self.db = db
         self.discovered = discovered  # set[str] of discovered names
         self.font_title = pygame.font.SysFont("DejaVuSans", 34, bold=True)
         self.font_body  = pygame.font.SysFont("DejaVuSans", 24)
@@ -52,8 +53,8 @@ class CollectionPage:
 
         # image
         top_rect = pygame.Rect(0,0,left_w,h//2)
-        if discovered and item["name"] in self.discovered:
-            entry = self.discovered.get(item["name"])
+        if discovered:
+            entry = self.db.get(item["name"])
             imgs = entry.get("images", []) if isinstance(entry, dict) else []
             img_path = imgs[-1] if imgs else SILHOUETTE
 

@@ -32,7 +32,7 @@ class MainMenu:
                 self.items[self.sel][1]()
 
     def goto_collection(self):
-        collection.run(self.screen, self.discovered)
+        collection.run(self.screen, self.discovered, self.db)
 
     def goto_camera(self):
         base = Path(__file__).parent
