@@ -2,9 +2,12 @@
 import csv
 import numpy as np, PIL.Image as Image
 from tflite_runtime.interpreter import Interpreter
+import tensorflow as tf
+import tflite_runtime.interpreter as tflite
+
 class SpeciesClassifier:
     def __init__(self, model_path, csv_path):
-        self.interpreter = tf.lite.Interpreter(model_path=model_path)
+        self.interpreter = tflite.Interpreter(model_path=model_path)
         self.interpreter.allocate_tensors()
         self.labels = load_labels_from_csv(csv_path)
         self.input_details = self.interpreter.get_input_details()
