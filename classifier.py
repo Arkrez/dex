@@ -1,9 +1,19 @@
 # classifier.py
 import csv
-import numpy as np, PIL.Image as Image
-from tflite_runtime.interpreter import Interpreter
-import tensorflow as tf
+import numpy as np
+from PIL import Image
 import tflite_runtime.interpreter as tflite
+
+def load_labels_from_csv(csv_path: str):
+    labels = {}
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            if row.get("leaf_class_id") and row.get("name"):
+                try:
+                    labels[int(row["leaf_class_id"])] = row["name"]
+                except ValueError:
+                    pass
+    return labels
 
 class SpeciesClassifier:
     def __init__(self, model_path, csv_path):
@@ -14,25 +24,8 @@ class SpeciesClassifier:
         self.output_details = self.interpreter.get_output_details()
 
     def classify(self, image_path, top_k=1):
-        # ... preprocess & run as before ...
+        # preprocess image to match input_details[0]['shape'] and dtype...
+        self.interpreter.invoke()
         output = self.interpreter.get_tensor(self.output_details[0]['index'])[0]
-        top_indices = output.argsort()[-top_k:][::-1]
-        return [(self.labels.get(i, f"Unknown-{i}"), float(output[i])) for i in top_indices]
-
-
-    def load_labels_from_csv(csv_path: str):
-        """
-        Returns a dict mapping leaf_class_id (int) -> species name (str).
-        Only rows with a leaf_class_id and name will be included.
-        """
-        labels = {}
-        with open(csv_path, newline="", encoding="utf-8") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row.get("leaf_class_id") and row.get("name"):
-                    try:
-                        leaf_id = int(row["leaf_class_id"])
-                        labels[leaf_id] = row["name"]
-                    except ValueError:
-                        continue
-        return labels
+        top_idx = output.argsort()[-top_k:][::-1]
+        return [(self.labels.get(i, f"Unknown-{i}"), float(output[i])) for i in top_idx]
