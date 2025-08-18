@@ -1,9 +1,8 @@
-import pygame
-import sys
-import collection  # your other page
-import os, subprocess
-
+import pygame, sys, os, subprocess
+from pathlib import Path
 from classifier import SpeciesClassifier
+import collection
+from discovered import load as load_disc, save as save_disc
 
 class MainMenu:
     def __init__(self, screen):
@@ -12,6 +11,8 @@ class MainMenu:
         self.items = [("Browse Collection", self.goto_collection),
                       ("Take a Screenshot", self.action_take_screenshot)]
         self.sel = 0
+        # keep discovered in memory
+        self.discovered = load_disc()
 
     def draw(self):
         self.screen.fill((0,0,0))
@@ -29,19 +30,28 @@ class MainMenu:
                 self.items[self.sel][1]()
 
     def goto_collection(self):
-        collection.run(self.screen)  # switch to collection page
-
+        # pass discovered set into collection UI
+        collection.run(self.screen, self.discovered)
 
     def action_take_screenshot(self):
-        CLF = SpeciesClassifier("/home/pi/models/inat.tflite", "/home/pi/models/labels.txt")
+        BASE_DIR = Path(__file__).parent
+        MODEL_PATH = BASE_DIR / "models" / "inat.tflite"
+        LABELS_PATH = BASE_DIR / "models" / "labels.txt"
+        CLF = SpeciesClassifier(str(MODEL_PATH), str(LABELS_PATH))
 
         outdir = os.path.expanduser("~/Pictures"); os.makedirs(outdir, exist_ok=True)
         img = os.path.join(outdir, "capture.jpg")
-        subprocess.run(["libcamera-still", "-n", "-o", img, "-t", "1000", "--width", "1024", "--height", "768"], check=True)
-        preds = CLF.classify(img, top_k=3)
-        print("Top:", preds[0])  # TODO: render on-screen in your UI
+        subprocess.run(["libcamera-still","-n","-o",img,"-t","1000","--width","1024","--height","768"], check=True)
 
+        top = CLF.classify(img, top_k=1)[0]  # (label, prob)
+        label, prob = top[0], top[1]
+        print(f"Top: {label}  {prob:.2%}")
 
+        if prob >= 0.80:
+            if label not in self.discovered:
+                self.discovered.add(label)
+                save_disc(self.discovered)
+                print(f"Discovered: {label}")
 def run():
     pygame.init()
     screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
