@@ -15,6 +15,8 @@ source .venv/bin/activate
 
 echo "Upgrading pip..."
 python3 -m pip install --upgrade pip setuptools wheel
+python3 -m pip install \
+     https://github.com/google-coral/pycoral/releases/download/release-frogfish/tflite_runtime-2.14.0-cp39-cp39-linux_aarch64.whl
 
 echo "Installing Python packages..."
 python3 -m pip install \
