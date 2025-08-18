@@ -4,10 +4,9 @@ from pathlib import Path
 import csv
 
 # sample data
-ANIMALS = [
-]
+ANIMALS = [{"name": "", "description": "", "image": ""} for _ in range(600)] 
+
 def load_labels_from_csv(csv_path: str):
-    ANIMALS = []
     with open(csv_path, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
             if row.get("leaf_class_id") and row.get("name"):
@@ -15,7 +14,7 @@ def load_labels_from_csv(csv_path: str):
                     ANIMALS[int(row["leaf_class_id"])] = {
                         "name": row["name"],
                         "description": "",
-                        "iamge": ""
+                        "image": ""
                         }
                 except ValueError:
                     pass
