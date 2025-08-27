@@ -1,8 +1,9 @@
 import os, time
 from pathlib import Path
 import pygame
-from picamera2 import Picamera2
-from discovered import add_discovery   # <-- import DB write helper
+#from picamera2 import Picamera2
+from discovered import add_discovery 
+from classifier import SpeciesClassifier
 
 class CameraView:
     def __init__(self, outdir: str, width=1024, height=768):
@@ -16,7 +17,7 @@ class CameraView:
 
     def _init_camera(self):
         if self.picam: return
-        self.picam = Picamera2()
+        #self.picam = Picamera2()
         cfg = self.picam.create_preview_configuration(
             main={"size": (self.width, self.height), "format": "RGB888"}
         )
@@ -32,7 +33,7 @@ class CameraView:
             s = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
             s.fill((255,255,255,40)); screen.blit(s, (0,0))
 
-    def run(self, screen, classifier):
+    def run(self, screen, classifier: SpeciesClassifier):
         self._init_camera()
         clock = pygame.time.Clock()
         font = pygame.font.SysFont("DejaVuSans", 28, bold=True)
@@ -63,7 +64,8 @@ class CameraView:
                         showing_photo = True
 
                         # classify (use the passed classifier; use img_path)
-                        label, prob = classifier.classify(img_path, top_k=1)[0]
+                        
+                        label, prob = classifier.classify_v2(img_path)[0]
                         self.last_result = (label, prob)
                         print(f"Top: {label}  {prob:.2%}")
 

@@ -2,7 +2,28 @@
 import csv
 import numpy as np
 from PIL import Image
-import tflite_runtime.interpreter as tflite
+import speciesnet 
+import subprocess
+import tensorflow as tf
+import numpy as np
+import pathlib
+import json
+#from tensorflow.keras.preprocessing import image
+
+# Load model (after extracting model.tar.gz somewhere, e.g. ~/Downloads/model)
+#model = tf.keras.models.load_model("/Users/arkrez/Downloads/model")
+
+# Path to your images
+#img_dir = pathlib.Path("assets")
+
+#for img_path in img_dir.glob("*.jpg"):
+#    img = image.load_img(img_path, target_size=(224, 224))  # adjust size to match model input
+#    x = image.img_to_array(img)
+#    x = np.expand_dims(x, axis=0) / 255.0
+#
+#    preds = model.predict(x)
+#    print(img_path.name, preds.argmax())
+
 
 def load_labels_from_csv(csv_path: str):
     labels = {}
@@ -15,14 +36,20 @@ def load_labels_from_csv(csv_path: str):
                     pass
     return labels
 
-class SpeciesClassifier:
-    def __init__(self, model_path, csv_path):
-        self.interpreter = tflite.Interpreter(model_path=model_path)
-        self.interpreter.allocate_tensors()
-        self.labels = load_labels_from_csv(csv_path)
-        self.input_details = self.interpreter.get_input_details()
-        self.output_details = self.interpreter.get_output_details()
+class SpeciesClassifier:        
+    def classify_v2(self, image_path):
+        subprocess.run(['ls', '-l'])
+        subprocess.run([
+            "python",
+            "-m", "speciesnet.scripts.run_model",
+            "--filepaths", image_path,
+            "--predictions_json", "assets/out.json"
+        ])
+        with open('assets/out.json', 'r') as file:
+            data = json.load(file)
+        arr = data["predictions"][0]["prediction"].split(';')
 
+        return [arr[-1], data["predictions"][0]["prediction_score"]]
 
     def classify(self, image_path, top_k=1):
         # Load and resize image to match model input

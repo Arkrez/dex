@@ -35,13 +35,10 @@ class MainMenu:
         collection.run(self.screen, self.discovered, self.db)
 
     def goto_camera(self):
-        base = Path(__file__).parent
-        model_path = base / "models" / "inat.tflite"
-        csv_path   = base / "models" / "labels.csv"   # your CSV mapping
-        clf = SpeciesClassifier(str(model_path), str(csv_path))
+        clf = SpeciesClassifier()
 
         # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
-        outdir = os.path.expanduser("~/Pictures")
+        outdir = os.path.expanduser("/assets")
         cam = CameraView(outdir, width=1024, height=768)
         cam.run(self.screen, clf)
 
