@@ -38,7 +38,8 @@ class MainMenu:
         clf = SpeciesClassifier()
 
         # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
-        outdir = os.path.expanduser("/assets")
+        BASE = Path(__file__).resolve().parent
+        outdir = os.path.expanduser(BASE+"/assets")
         cam = CameraView(outdir, width=1024, height=768)
         cam.run(self.screen, clf)
 
