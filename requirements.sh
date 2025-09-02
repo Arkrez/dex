@@ -28,6 +28,8 @@ python -m pip install --upgrade pip setuptools wheel
 echo "=== Installing Python packages via pip ==="
 pip install "numpy==1.26.4" "tflite-runtime==2.14.0" \
     pillow pygame gpiozero RPi.GPIO
+pip "install speciesnet --use-pep517" 
+pip install tensorflow         
 
 echo "=== Sanity check ==="
 python - <<'PY'
