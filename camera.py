@@ -1,7 +1,7 @@
 import os, time
 from pathlib import Path
 import pygame
-#from picamera2 import Picamera2
+from picamera2 import Picamera2
 from discovered import add_discovery 
 from classifier import SpeciesClassifier
 
@@ -17,7 +17,7 @@ class CameraView:
 
     def _init_camera(self):
         if self.picam: return
-        #self.picam = Picamera2()
+        self.picam = Picamera2()
         cfg = self.picam.create_preview_configuration(
             main={"size": (self.width, self.height), "format": "RGB888"}
         )
