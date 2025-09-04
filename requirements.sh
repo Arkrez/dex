@@ -11,7 +11,7 @@ sudo apt full-upgrade -y
 
 echo "=== Installing system packages ==="
 sudo apt install -y \
-    python3-venv python3-pip \
+    python3-venv python3-pip python3-numpy \
     libatlas-base-dev \
     libcamera-apps \
     python3-picamera2 \
@@ -25,11 +25,12 @@ source .venv/bin/activate
 echo "=== Upgrading pip tools ==="
 python -m pip install --upgrade pip setuptools wheel
 
-echo "=== Installing Python packages via pip ==="
-pip install "numpy==1.26.4" "tflite-runtime==2.14.0" \
+echo "=== Installing Python packages via pip (no NumPy override) ==="
+pip install "tflite-runtime==2.14.0" \
     pillow pygame gpiozero RPi.GPIO
-pip install speciesnet --use-pep517 
-pip install tensorflow         
+pip install speciesnet --use-pep517
+# make sure no venv NumPy shadows system NumPy
+pip uninstall -y numpy || true
 
 echo "=== Sanity check ==="
 python - <<'PY'
