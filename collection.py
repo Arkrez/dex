@@ -37,11 +37,11 @@ def load_labels_speciesnet():
             try:
                 name = line.strip().split(",", 1)[-1]
 
-                ANIMALS[i] = {
+                ANIMALS.append({
                         "name": name,
                         "description": "",
                         "image": ""
-                    }
+                    })
             except ValueError:
                     pass
         return ANIMALS
