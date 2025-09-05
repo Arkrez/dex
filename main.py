@@ -50,7 +50,7 @@ class MainMenu:
 
 def run():
     pygame.init()
-    screen = pygame.display.set_mode((1280, 800))  # windowed for dev; switch to FULLSCREEN on Pi
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)  # windowed for dev; switch to FULLSCREEN on Pi
     pygame.display.set_caption("DEX")
     menu = MainMenu(screen)
     clock = pygame.time.Clock()
