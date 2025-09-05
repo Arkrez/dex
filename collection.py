@@ -7,7 +7,7 @@ from collections import OrderedDict
 od = OrderedDict()
 
 # sample data
-ANIMALS = [{"name": "", "description": "", "image": ""} for _ in range(600)]
+ANIMALS = []
 
 
 def load_labels_from_csv(csv_path: str):
@@ -29,7 +29,7 @@ def load_labels_speciesnet():
         return
     BASE_DIR = Path(__file__).parent
 
-    path = BASE_DIR / "models" / "taxonomy-release.txt"
+    path = BASE_DIR / "models" / "taxonomy_release.txt"
 
     with open(path, "r", encoding="utf-8") as f:
         i = 0
