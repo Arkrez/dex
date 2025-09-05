@@ -27,8 +27,11 @@ def load_labels_from_csv(csv_path: str):
 def load_labels_speciesnet():
     if (od): 
         return
+    BASE_DIR = Path(__file__).parent
 
-    with open("models/taxonomy-release.txt", "r", encoding="utf-8") as f:
+    path = BASE_DIR / "models" / "taxonomy-release.txt"
+
+    with open(path, "r", encoding="utf-8") as f:
         i = 0
         for line in f:
             try:
