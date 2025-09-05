@@ -67,7 +67,7 @@ class CameraView:
 
                         # classify (use the passed classifier; use img_path)
 
-                        label, prob = classifier.classify_v2(img_path)[0]
+                        label, prob = classifier.classify_v2(img_path)
                         self.last_result = (label, prob)
                         print(f"Top: {label}  {prob:.2%}")
 
