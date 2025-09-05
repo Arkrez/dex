@@ -48,8 +48,9 @@ class SpeciesClassifier:
         with open('assets/out.json', 'r') as file:
             data = json.load(file)
         arr = data["predictions"][0]["prediction"].split(';')
-
-        return [arr[-1], data["predictions"][0]["prediction_score"]]
+        res = [arr[-1], data["predictions"][0]["prediction_score"]]
+        print(res)
+        return res
 
     def classify(self, image_path, top_k=1):
         # Load and resize image to match model input
