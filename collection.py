@@ -2,6 +2,9 @@
 import pygame, os, textwrap
 from pathlib import Path
 import csv
+from collections import OrderedDict
+
+od = OrderedDict()
 
 # sample data
 ANIMALS = [{"name": "", "description": "", "image": ""} for _ in range(600)]
@@ -21,14 +24,32 @@ def load_labels_from_csv(csv_path: str):
                     pass
     return ANIMALS
 
+def load_labels_speciesnet(path: str):
+    if (od): 
+        return
+
+    with open("models/taxonomy-release.txt", "r", encoding="utf-8") as f:
+        i = 0
+        for line in f:
+            try:
+                name = line.strip().split(",", 1)[-1]
+
+                ANIMALS[i] = {
+                        "name": name,
+                        "description": "",
+                        "image": ""
+                    }
+            except ValueError:
+                    pass
+        return ANIMALS
 
 SILHOUETTE = str(Path(__file__).parent / "assets" / "silhouette.jpg")  # add a silhouette image to repo
 
-PANEL_BG = (24, 26, 32);
-LIST_BG = (16, 18, 22);
-HILITE = (60, 120, 250);
-FG = (235, 235, 235);
-MUTED = (180, 184, 192);
+PANEL_BG = (24, 26, 32)
+LIST_BG = (16, 18, 22)
+HILITE = (60, 120, 250)
+FG = (235, 235, 235)
+MUTED = (180, 184, 192)
 BORDER = (48, 52, 60)
 
 
@@ -50,13 +71,13 @@ class CollectionPage:
         self.font_title = pygame.font.SysFont("DejaVuSans", 34, bold=True)
         self.font_body = pygame.font.SysFont("DejaVuSans", 24)
         self.font_list = pygame.font.SysFont("DejaVuSans", 28)
-        self.sel = 0;
-        self.scroll = 0;
+        self.sel = 0
+        self.scroll = 0
         self.cache = {}
 
     def draw(self):
-        w, h = self.screen.get_size();
-        left_w = w // 2;
+        w, h = self.screen.get_size()
+        left_w = w // 2
         right_x = left_w
         self.screen.fill(LIST_BG)
         pygame.draw.rect(self.screen, PANEL_BG, (0, 0, left_w, h))
@@ -97,11 +118,11 @@ class CollectionPage:
             y += line_surf.get_height() + 4
 
         # right list (show names if discovered, else ???)
-        list_pad = 18;
+        list_pad = 18
         row_h = 48
         view_rows = (h - list_pad * 2) // row_h
         self.scroll = max(0, min(self.scroll, max(0, len(ANIMALS) - view_rows)))
-        start = self.scroll;
+        start = self.scroll
         end = min(len(ANIMALS), start + view_rows)
         y = list_pad
         for i in range(start, end):
@@ -129,8 +150,8 @@ class CollectionPage:
         return True
 
     def _ensure_visible(self, _):
-        h = self.screen.get_height();
-        row_h = 48;
+        h = self.screen.get_height()
+        row_h = 48
         list_pad = 18
         view_rows = (h - list_pad * 2) // row_h
         if self.sel < self.scroll:
@@ -142,7 +163,7 @@ class CollectionPage:
 def run(screen, discovered, db):
     BASE_DIR = Path(__file__).parent
     LABELS_PATH = BASE_DIR / "models" / "labels.csv"
-    load_labels_from_csv(LABELS_PATH)
+    load_labels_speciesnet()
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered, db)
 
