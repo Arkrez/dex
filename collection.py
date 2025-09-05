@@ -24,7 +24,7 @@ def load_labels_from_csv(csv_path: str):
                     pass
     return ANIMALS
 
-def load_labels_speciesnet(path: str):
+def load_labels_speciesnet():
     if (od): 
         return
 
