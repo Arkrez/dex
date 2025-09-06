@@ -34,7 +34,7 @@ def load_labels_speciesnet():
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
             try:
-                name = line.strip().split(",", 1)[-1]
+                name = line.strip().split(",")[-1]
 
                 ANIMALS.append({
                         "name": name,
