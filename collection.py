@@ -130,7 +130,6 @@ class CollectionPage:
 
 
 def run(screen, discovered, db):
-    load_labels_speciesnet()
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered, db)
 
