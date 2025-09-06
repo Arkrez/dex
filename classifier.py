@@ -6,7 +6,7 @@ import speciesnet
 import subprocess
 import tensorflow as tf
 import numpy as np
-import pathlib as Path
+from pathlib import Path
 import json
 #from tensorflow.keras.preprocessing import image
 
