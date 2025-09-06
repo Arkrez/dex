@@ -40,7 +40,7 @@ class MainMenu:
         # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
         BASE = Path(__file__).resolve().parent
         outdir = os.path.expanduser(str(Path(__file__).parent / "assets"))
-        cam = CameraView(outdir, width=1024, height=768)
+        cam = CameraView(outdir, width=800, height=480)
         cam.run(self.screen, clf)
 
         # refresh discovered after camera session (camera updates DB itself)

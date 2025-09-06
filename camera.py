@@ -54,7 +54,9 @@ class CameraView:
                     elif e.key in (pygame.K_RETURN, pygame.K_SPACE):
                         # capture
                         ts = time.strftime("%Y%m%d_%H%M%S")
-                        img_path = os.path.join(self.outdir, f"capture_{ts}.jpg")
+                        BASE = Path(__file__).resolve().parent
+
+                        img_path = str(BASE / "assets" /  f"capture_{ts}.jpg")
                         self.picam.capture_file(img_path)
                         self.last_photo_path = img_path
                         self.just_captured_ts = time.time()
@@ -66,7 +68,7 @@ class CameraView:
                         showing_photo = True
 
                         # classify (use the passed classifier; use img_path)
-
+                        print(img_path)
                         label, prob = classifier.classify_v2(img_path)
                         self.last_result = (label, prob)
                         print(f"Top: {label}  {prob:.2%}")
@@ -104,6 +106,6 @@ class CameraView:
             clock.tick(30)
 
         if self.picam:
-            self.picam.stop();
-            self.picam.close();
+            self.picam.stop()
+            self.picam.close()
             self.picam = None

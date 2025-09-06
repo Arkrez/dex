@@ -6,7 +6,7 @@ import speciesnet
 import subprocess
 import tensorflow as tf
 import numpy as np
-import pathlib
+import pathlib as Path
 import json
 #from tensorflow.keras.preprocessing import image
 
@@ -24,17 +24,8 @@ import json
 #    preds = model.predict(x)
 #    print(img_path.name, preds.argmax())
 
+BASE = Path(__file__).resolve().parent
 
-def load_labels_from_csv(csv_path: str):
-    labels = {}
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            if row.get("leaf_class_id") and row.get("name"):
-                try:
-                    labels[int(row["leaf_class_id"])] = row["name"]
-                except ValueError:
-                    pass
-    return labels
 
 class SpeciesClassifier:        
     def classify_v2(self, image_path):
@@ -43,7 +34,8 @@ class SpeciesClassifier:
             "python",
             "-m", "speciesnet.scripts.run_model",
             "--filepaths", image_path,
-            "--predictions_json", "assets/out.json"
+            "--predictions_json", str(BASE / "assets" / "out.json")
+
         ])
         with open('assets/out.json', 'r') as file:
             data = json.load(file)
