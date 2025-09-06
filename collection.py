@@ -106,7 +106,7 @@ class CollectionPage:
         pygame.draw.rect(self.screen, PANEL_BG, bot_rect)
         pygame.draw.line(self.screen, BORDER, (0, h // 2), (left_w, h // 2), 2)
 
-        title = item["name"] if discovered else "???" + item["name"]
+        title = item["name"] if discovered else "???"
         desc = item["description"] if discovered else "???"
         title_surf = self.font_title.render(title, True, FG)
         self.screen.blit(title_surf, (bot_rect.x + 16, bot_rect.y + 14))
@@ -167,7 +167,7 @@ def run(screen, discovered, db):
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered, db)
 
-    pygame.key.set_repeat(100, 50)
+    pygame.key.set_repeat(200, 25)
 
     running = True
     while running:
