@@ -88,7 +88,7 @@ class CollectionPage:
 
         item = ANIMALS[self.sel]
         for name in self.discovered:
-            print(name["name"])
+            print(name)
         discovered = (item["name"] in self.discovered)
 
         # image
