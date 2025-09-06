@@ -87,6 +87,8 @@ class CollectionPage:
         pygame.draw.line(self.screen, BORDER, (left_w, 0), (left_w, h), 2)
 
         item = ANIMALS[self.sel]
+        for name in self.discovered:
+            print(name["name"])
         discovered = (item["name"] in self.discovered)
 
         # image
@@ -164,8 +166,6 @@ class CollectionPage:
 
 
 def run(screen, discovered, db):
-    BASE_DIR = Path(__file__).parent
-    LABELS_PATH = BASE_DIR / "models" / "labels.csv"
     load_labels_speciesnet()
     clock = pygame.time.Clock()
     page = CollectionPage(screen, discovered, db)
