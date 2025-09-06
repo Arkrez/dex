@@ -3,48 +3,15 @@ import pygame, os, textwrap
 from pathlib import Path
 import csv
 from collections import OrderedDict
+import json
 
 od = OrderedDict()
 
 # sample data
+BASE_DIR = Path(__file__).parent
 ANIMALS = []
-
-
-def load_labels_from_csv(csv_path: str):
-    with open(csv_path, newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            if row.get("leaf_class_id") and row.get("name"):
-                try:
-                    ANIMALS[int(row["leaf_class_id"])] = {
-                        "name": row["name"],
-                        "description": "",
-                        "image": ""
-                    }
-                except ValueError:
-                    pass
-    return ANIMALS
-
-def load_labels_speciesnet():
-    if (od): 
-        return
-    BASE_DIR = Path(__file__).parent
-
-    path = BASE_DIR / "models" / "taxonomy_release.txt"
-
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            try:
-                name = line.strip().split(";")[-1]
-
-                ANIMALS.append({
-                        "name": name,
-                        "description": "",
-                        "image": ""
-                    })
-            except ValueError:
-                    pass
-        return ANIMALS
-
+with open(BASE_DIR / "models" / "animals.json", "r", encoding="utf-8") as f:
+    ANIMALS = json.load(f)
 SILHOUETTE = str(Path(__file__).parent / "assets" / "silhouette.jpg")  # add a silhouette image to repo
 
 PANEL_BG = (24, 26, 32)
