@@ -24,11 +24,12 @@ import json
 #    preds = model.predict(x)
 #    print(img_path.name, preds.argmax())
 
-BASE = Path(__file__).resolve().parent
 
 
 class SpeciesClassifier:        
     def classify_v2(self, image_path):
+        BASE = Path(__file__).resolve().parent
+
         subprocess.run(['ls', '-l'])
         subprocess.run([
             "python",
