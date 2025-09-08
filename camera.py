@@ -52,6 +52,8 @@ class CameraView:
                 elif e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         running = False
+                        showing_photo = False
+
                     elif e.key in (pygame.K_RETURN, pygame.K_SPACE):
                         # capture
                         ts = time.strftime("%Y%m%d_%H%M%S")
