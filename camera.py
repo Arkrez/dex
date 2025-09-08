@@ -48,6 +48,7 @@ class CameraView:
             for e in pygame.event.get():
                 if e.type == pygame.QUIT:
                     running = False
+                    showing_photo = False
                 elif e.type == pygame.KEYDOWN:
                     if e.key == pygame.K_ESCAPE:
                         running = False

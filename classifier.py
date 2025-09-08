@@ -1,10 +1,7 @@
 # classifier.py
-import csv
 import numpy as np
 from PIL import Image
-import speciesnet 
 import subprocess
-import tensorflow as tf
 import numpy as np
 from pathlib import Path
 import json
