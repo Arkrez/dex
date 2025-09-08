@@ -28,11 +28,14 @@ class SpeciesClassifier:
         BASE = Path(__file__).resolve().parent
         OUT_PATH = str(BASE / "assets" / "out.json")
         subprocess.run(['ls', '-l'])
-        subprocess.run([
+        subprocess.run([            
             "python",
-            "-m", "speciesnet.scripts.run_model",
-            "--filepaths", image_path,
-            "--predictions_json", OUT_PATH
+            "-m", 
+            "speciesnet.scripts.run_model",
+            "--filepaths", 
+            image_path,
+            "--predictions_json", 
+            OUT_PATH
         ])
         with open(OUT_PATH, 'r') as file:
             data = json.load(file)
