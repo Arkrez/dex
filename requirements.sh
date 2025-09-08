@@ -31,6 +31,8 @@ pip install "tflite-runtime==2.14.0" \
 pip install speciesnet --use-pep517
 # make sure no venv NumPy shadows system NumPy
 pip uninstall -y numpy || true
+pip install numpy 'numpy==1.26.4'
+pip install tensorflow
 
 echo "=== Sanity check ==="
 python - <<'PY'
