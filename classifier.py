@@ -26,16 +26,15 @@ import json
 class SpeciesClassifier:        
     def classify_v2(self, image_path):
         BASE = Path(__file__).resolve().parent
-
+        OUT_PATH = str(BASE / "assets" / "out.json")
         subprocess.run(['ls', '-l'])
         subprocess.run([
             "python",
             "-m", "speciesnet.scripts.run_model",
             "--filepaths", image_path,
-            "--predictions_json", str(BASE / "assets" / "out.json")
-
+            "--predictions_json", OUT_PATH
         ])
-        with open('assets/out.json', 'r') as file:
+        with open(OUT_PATH, 'r') as file:
             data = json.load(file)
         arr = data["predictions"][0]["prediction"].split(';')
         res = [arr[-1], data["predictions"][0]["prediction_score"]]
