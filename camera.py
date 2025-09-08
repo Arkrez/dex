@@ -65,7 +65,7 @@ class CameraView:
                         self.just_captured_ts = time.time()
 
                         # show still
-                        photo = pygame.image.load(str(BASE / img_path))
+                        photo = pygame.image.load(img_path)
                         photo = pygame.transform.smoothscale(photo, screen.get_size())
                         photo_surface = photo
                         showing_photo = True

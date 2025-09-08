@@ -33,7 +33,7 @@ class SpeciesClassifier:
             "-m", 
             "speciesnet.scripts.run_model",
             "--filepaths", 
-            str(BASE /image_path),
+            image_path,
             "--predictions_json", 
             OUT_PATH
         ])
