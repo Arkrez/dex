@@ -4,6 +4,8 @@ from PIL import Image
 import subprocess
 from pathlib import Path
 import json
+import json, os, sys, tempfile, subprocess
+
 #from tensorflow.keras.preprocessing import image
 
 # Load model (after extracting model.tar.gz somewhere, e.g. ~/Downloads/model)
@@ -27,7 +29,7 @@ class SpeciesClassifier:
         BASE = Path(__file__).resolve().parent
         OUT_PATH = str(BASE / "assets" / "out.json")
         subprocess.run([            
-            "python",
+            sys.executable,
             "-m", 
             "speciesnet.scripts.run_model",
             "--filepaths", 
