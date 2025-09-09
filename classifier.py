@@ -2,7 +2,6 @@
 import numpy as np
 from PIL import Image
 import subprocess
-import numpy as np
 from pathlib import Path
 import json
 #from tensorflow.keras.preprocessing import image
@@ -27,7 +26,6 @@ class SpeciesClassifier:
     def classify_v2(self, image_path):
         BASE = Path(__file__).resolve().parent
         OUT_PATH = str(BASE / "assets" / "out.json")
-        subprocess.run(['ls', '-l'])
         subprocess.run([            
             "python",
             "-m", 

@@ -35,7 +35,9 @@ class CameraView:
             s.fill((255, 255, 255, 40));
             screen.blit(s, (0, 0))
 
-    def run(self, screen, classifier: SpeciesClassifier):
+    def run(self, screen):
+        classifier = SpeciesClassifier()
+
         self._init_camera()
         clock = pygame.time.Clock()
         font = pygame.font.SysFont("DejaVuSans", 28, bold=True)

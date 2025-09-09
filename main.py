@@ -1,6 +1,5 @@
 import pygame, sys, os
 from pathlib import Path
-from classifier import SpeciesClassifier
 import collection
 from discovered import load_db, discovered_names   # use DB helpers
 from camera import CameraView
@@ -35,13 +34,11 @@ class MainMenu:
         collection.run(self.screen, self.discovered, self.db)
 
     def goto_camera(self):
-        clf = SpeciesClassifier()
-
         # save raw captures anywhere (they’ll be copied into ./discovered/ by add_discovery)
         BASE = Path(__file__).resolve().parent
         outdir = os.path.expanduser(str(Path(__file__).parent / "assets"))
         cam = CameraView(outdir, width=800, height=480)
-        cam.run(self.screen, clf)
+        cam.run(self.screen)
 
         # refresh discovered after camera session (camera updates DB itself)
         from discovered import load_db, discovered_names
