@@ -61,7 +61,7 @@ class CameraView:
                         ts = time.strftime("%Y%m%d_%H%M%S")
                         BASE = Path(__file__).resolve().parent
 
-                        img_path = str(BASE / "assets/" +  f"capture_{ts}.jpg")
+                        img_path = str(BASE / "assets" /  f"capture_{ts}.jpg")
                         self.picam.capture_file(img_path)
                         self.last_photo_path = img_path
                         self.just_captured_ts = time.time()
