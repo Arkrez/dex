@@ -3,6 +3,9 @@ from pathlib import Path
 import collection
 from discovered import load_db, discovered_names   # use DB helpers
 from camera import CameraView
+import argparse
+import asyncio
+import sys
 
 class MainMenu:
     def __init__(self, screen):
@@ -51,6 +54,21 @@ def run():
     pygame.display.set_caption("DEX")
     menu = MainMenu(screen)
     clock = pygame.time.Clock()
+
+
+
+# Define CLI arguments
+
+
+# Main async loop
+async def main():
+    print(f"App started in mode: {args.mode or 'idle'}")
+    loop = asyncio.get_event_loop()
+    parser = argparse.ArgumentParser(description="Control a Python app via CLI.")
+    parser.add_argument("--mode", choices=["start", "stop"], help="Initial mode")
+    args = parser.parse_args()
+    # Listen for stdin commands
+
     running = True
     while running:
         for e in pygame.event.get():
@@ -58,6 +76,24 @@ def run():
                 running = False
             else:
                 menu.handle_event(e)
+
+        print("Waiting for command (type 'quit' to exit):")
+        cmd = await loop.run_in_executor(None, sys.stdin.readline)
+        cmd = cmd.strip()
+        e = {}
+        e.type = pygame.KEYDOWN
+            
+        if cmd == "w":
+            e.key = pygame.K_UP
+        elif cmd == "s":
+            e.key = pygame.DOWN
+        elif cmd == "c":
+            e.key = pygame.RETURN
+        elif cmd == " ":
+            pygame.K_SPACE
+        else:
+            print(f"Unknown command: {cmd}")
+        menu.handle_event(e)
         menu.draw()
         clock.tick(30)
     pygame.quit(); sys.exit()
